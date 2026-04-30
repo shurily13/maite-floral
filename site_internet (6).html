@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Maïté Floral</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body { overflow-x: hidden; }
+
+    /* ── PAGE INTRO ── */
+    .intro {
+      height: 100vh;
+      background: url('data:image/avif;base64,VOTRE_IMAGE_ICI') no-repeat center center/cover;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .title {
+      font-size: 3rem;
+      color: hsl(113, 73%, 60%);
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      font-size: 1.3rem;
+      color: #146314;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      margin-bottom: 20px;
+    }
+
+    /* ── BOUTONS ── */
+    .btn {
+      padding: 12px 25px;
+      border: none;
+      background: #b8e0d2;
+      color: #355f5b;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 30px;
+      transition: 0.3s;
+    }
+    .btn:hover { transform: scale(1.05); background: #d0f0e6; }
+
+    .back-btn {
+      padding: 10px 22px;
+      border: none;
+      background: #c08497;
+      color: white;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border-radius: 30px;
+      transition: 0.3s;
+    }
+    .back-btn:hover { background: #a86d82; transform: scale(1.05); }
+
+
+
+    /* ── PAGES ── */
+    .page { display: none; min-height: 100vh; background: linear-gradient(to bottom, #fdf6f9, #ffffff); }
+
+    .hero {
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+    .hero h1 { font-size: 3rem; color: #c08497; margin-bottom: 10px; }
+    .hero p { max-width: 600px; font-size: 1.2rem; margin-bottom: 20px; }
+
+    section { padding: 60px 20px; max-width: 900px; margin: auto; }
+    h2 { color: #c08497; margin-bottom: 15px; }
+
+    .contact input, .contact textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+    }
+    footer { text-align: center; padding: 20px; color: gray; }
+
+    /* ── BOUTIQUE ── */
+    .boutique-hero {
+      background: linear-gradient(135deg, #fdf0f4, #f7e8f0);
+      padding: 60px 20px;
+      text-align: center;
+    }
+    .boutique-hero h1 { font-size: 2.5rem; color: #c08497; margin-bottom: 10px; }
+    .boutique-hero p { color: #888; font-size: 1.1rem; margin-bottom: 20px; }
+
+    .produits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 28px;
+      max-width: 1000px;
+      margin: 50px auto;
+      padding: 0 30px 60px;
+    }
+
+    .produit-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 18px rgba(192, 132, 151, 0.13);
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      border: 1px solid #f3dde5;
+      cursor: pointer;
+    }
+    .produit-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 30px rgba(192, 132, 151, 0.22);
+    }
+    .produit-emoji {
+      font-size: 3.5rem;
+      background: linear-gradient(135deg, #fdf0f4, #fce4ec);
+      text-align: center;
+      padding: 30px 20px 20px;
+    }
+    .produit-info { padding: 16px 18px 20px; }
+    .produit-info h3 { font-size: 1.05rem; color: #333; margin-bottom: 6px; }
+    .produit-info p { font-size: 0.88rem; color: #999; margin-bottom: 14px; line-height: 1.5; }
+    .produit-footer { display: flex; justify-content: space-between; align-items: center; }
+    .produit-prix { font-size: 1.2rem; font-weight: bold; color: #c08497; }
+
+    .voir-btn {
+      padding: 8px 16px;
+      background: #c08497;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .voir-btn:hover { background: #a86d82; }
+
+    .badge {
+      display: inline-block;
+      background: #fce4ec;
+      color: #c08497;
+      font-size: 0.72rem;
+      padding: 3px 9px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    /* ── PAGE DÉTAIL ── */
+    .detail-container {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 0 30px 60px;
+    }
+    .detail-top {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .detail-visuel {
+      flex: 0 0 240px;
+      background: linear-gradient(135deg, #fdf0f4, #fce4ec);
+      border-radius: 20px;
+      text-align: center;
+      padding: 50px 20px;
+      font-size: 6rem;
+    }
+    .detail-infos { flex: 1; min-width: 220px; }
+    .detail-infos .badge { font-size: 0.82rem; margin-bottom: 14px; }
+    .detail-infos h1 { font-size: 1.9rem; color: #c08497; margin-bottom: 10px; }
+    .detail-prix-big { font-size: 2.2rem; font-weight: bold; color: #c08497; margin-bottom: 20px; }
+    .detail-desc { font-size: 1rem; color: #555; line-height: 1.8; margin-bottom: 24px; }
+
+    .detail-liste { list-style: none; margin-bottom: 28px; }
+    .detail-liste li {
+      padding: 9px 0;
+      border-bottom: 1px solid #f3dde5;
+      color: #666;
+      font-size: 0.95rem;
+    }
+    .detail-liste li::before { content: "🌸 "; }
+
+    .detail-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    .panier-btn {
+      padding: 13px 28px;
+      background: #c08497;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .panier-btn:hover { background: #a86d82; transform: scale(1.03); }
+
+    .detail-sep { margin: 40px 0 20px; border: none; border-top: 1px solid #f3dde5; }
+    .detail-section-titre { font-size: 1.1rem; color: #c08497; margin-bottom: 12px; font-weight: bold; }
+    .detail-note {
+      background: #fdf6f9;
+      border-left: 4px solid #c08497;
+      padding: 14px 18px;
+      border-radius: 0 10px 10px 0;
+      color: #666;
+      font-size: 0.92rem;
+      line-height: 1.7;
+    }
+
+    /* ── BOUTON PANIER FLOTTANT ── */
+    .panier-flottant {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #c08497;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      z-index: 500;
+      box-shadow: 0 4px 15px rgba(192, 132, 151, 0.4);
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panier-flottant:hover { background: #a86d82; transform: scale(1.05); }
+    .panier-count {
+      background: white;
+      color: #c08497;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── PAGE PANIER ── */
+    .panier-header {
+      background: linear-gradient(135deg, #fdf0f4, #f7e8f0);
+      padding: 50px 20px 30px;
+      text-align: center;
+    }
+    .panier-header h1 { font-size: 2.2rem; color: #c08497; margin-bottom: 8px; }
+    .panier-header p { color: #888; font-size: 1rem; }
+
+    .panier-contenu {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 0 20px 60px;
+    }
+    .panier-vide {
+      text-align: center;
+      padding: 60px 20px;
+      color: #bbb;
+      font-size: 1.1rem;
+    }
+    .panier-vide .big-emoji { font-size: 4rem; display: block; margin-bottom: 16px; }
+
+    .panier-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: white;
+      border-radius: 14px;
+      border: 1px solid #f3dde5;
+      padding: 16px 20px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 10px rgba(192,132,151,0.08);
+    }
+    .panier-item-emoji { font-size: 2.2rem; }
+    .panier-item-info { flex: 1; }
+    .panier-item-info h3 { font-size: 1rem; color: #333; margin-bottom: 4px; }
+    .panier-item-info span { font-size: 0.9rem; color: #c08497; font-weight: bold; }
+
+    .panier-qte { display: flex; align-items: center; gap: 10px; }
+    .qte-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid #f3dde5;
+      background: #fdf6f9;
+      color: #c08497;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+    }
+    .qte-btn:hover { background: #fce4ec; }
+    .qte-val { font-size: 1rem; font-weight: bold; color: #333; min-width: 18px; text-align: center; }
+
+    .suppr-btn {
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      cursor: pointer;
+      color: #e0a0b0;
+      transition: 0.2s;
+      padding: 4px;
+    }
+    .suppr-btn:hover { color: #c08497; transform: scale(1.2); }
+
+    .panier-total {
+      background: linear-gradient(135deg, #fdf0f4, #fce4ec);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .total-label { font-size: 1rem; color: #888; }
+    .total-montant { font-size: 2rem; font-weight: bold; color: #c08497; }
+    .commander-btn {
+      padding: 14px 32px;
+      background: #c08497;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .commander-btn:hover { background: #a86d82; transform: scale(1.03); }
+
+    /* ── NOTIF PANIER ── */
+    .notif {
+      display: none;
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #c08497;
+      color: white;
+      padding: 14px 22px;
+      border-radius: 30px;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      z-index: 999;
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── MODALE COMMANDE ── */
+    .modale-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modale-overlay.active { display: flex; }
+    .modale-box {
+      background: white;
+      border-radius: 20px;
+      padding: 36px 32px;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(192,132,151,0.25);
+      animation: popIn 0.25s ease;
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .modale-box .modale-emoji { font-size: 3rem; margin-bottom: 10px; }
+    .modale-box h3 { color: #c08497; font-size: 1.4rem; margin-bottom: 6px; }
+    .modale-box p { color: #888; font-size: 0.92rem; margin-bottom: 20px; }
+    .modale-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid #f3dde5;
+      border-radius: 12px;
+      font-size: 0.97rem;
+      outline: none;
+      margin-bottom: 14px;
+      transition: border 0.2s;
+    }
+    .modale-input:focus { border-color: #c08497; }
+    .modale-error {
+      background: #ffeaea;
+      color: #d44;
+      border-radius: 10px;
+      padding: 9px 14px;
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+      display: none;
+    }
+    .modale-actions { display: flex; gap: 10px; justify-content: center; }
+    .modale-confirm {
+      padding: 12px 26px;
+      background: #c08497;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 0.97rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .modale-confirm:hover { background: #a86d82; }
+    .modale-annuler {
+      padding: 12px 22px;
+      background: #f3dde5;
+      color: #c08497;
+      border: none;
+      border-radius: 30px;
+      font-size: 0.97rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .modale-annuler:hover { background: #fce4ec; }
+    .modale-succes { display: none; }
+    .modale-succes .modale-emoji { font-size: 3.5rem; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+
+<body>
+
+  <!-- INTRO -->
+  <div class="intro" id="page-intro">
+    <h1 class="title">Bienvenue</h1>
+    <p class="subtitle">Bienvenue dans l'univers floral de Maïté 🌸</p>
+    <button class="btn" onclick="afficher('page-site')">Entrer</button>
+  </div>
+
+  <!-- SITE PRINCIPAL -->
+  <div class="page" id="page-site">
+
+    <div class="hero" id="accueil">
+      <h1>La nature au cœur du digital</h1>
+      <p>Un univers doux et floral inspiré par les fleurs et la nature.</p>
+      <button class="btn" onclick="afficher('page-boutique')">Découvrir</button>
+    </div>
+    <section id="about">
+      <h2>À propos</h2>
+      <p>à complété.</p>
+    </section>
+    <section id="contact" class="contact">
+      <h2>Contact</h2>
+      <input type="text" placeholder="Nom" />
+      <input type="email" placeholder="Email" />
+      <textarea rows="5" placeholder="Message"></textarea>
+      <button class="btn">Envoyer</button>
+    </section>
+    <footer>© 2026 Maïté Floral - Tous droits réservés</footer>
+  </div>
+
+  <!-- BOUTIQUE -->
+  <div class="page" id="page-boutique">
+
+    <div class="boutique-hero">
+      <h1>Notre Boutique</h1>
+      <p>Des créations florales faites avec amour, pour embellir votre quotidien ✨</p>
+    </div>
+    <div class="produits-grid">
+
+      <div class="produit-card" onclick="ouvrirDetail('mariage')">
+        <div class="produit-emoji">💍</div>
+        <div class="produit-info">
+          <span class="badge">Mariage</span>
+          <h3>Bouquet de Mariée</h3>
+          <p>Un bouquet romantique et raffiné, créé sur mesure pour votre grand jour.</p>
+          <div class="produit-footer">
+            <span class="produit-prix">60 €</span>
+            <span class="voir-btn">Voir →</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="produit-card" onclick="ouvrirDetail('anniversaire')">
+        <div class="produit-emoji">🎂</div>
+        <div class="produit-info">
+          <span class="badge">Anniversaire</span>
+          <h3>Composition d'Anniversaire</h3>
+          <p>Une composition festive et colorée pour célébrer chaque anniversaire.</p>
+          <div class="produit-footer">
+            <span class="produit-prix">40 €</span>
+            <span class="voir-btn">Voir →</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="produit-card" onclick="ouvrirDetail('muguet')">
+        <div class="produit-emoji">🌱</div>
+        <div class="produit-info">
+          <span class="badge">Muguet</span>
+          <h3>Composition de Muguet</h3>
+          <p>Un brin de bonheur et de chance dans une composition de muguet délicat.</p>
+          <div class="produit-footer">
+            <span class="produit-prix">30 €</span>
+            <span class="voir-btn">Voir →</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="produit-card" onclick="ouvrirDetail('meres')">
+        <div class="produit-emoji">👩</div>
+        <div class="produit-info">
+          <span class="badge">Fête des Mères</span>
+          <h3>Composition Fête des Mères</h3>
+          <p>Une composition tendre et fleurie pour honorer toutes les mamans.</p>
+          <div class="produit-footer">
+            <span class="produit-prix">45 €</span>
+            <span class="voir-btn">Voir →</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="produit-card" onclick="ouvrirDetail('peres')">
+        <div class="produit-emoji">👨</div>
+        <div class="produit-info">
+          <span class="badge">Fête des Pères</span>
+          <h3>Composition Fête des Pères</h3>
+          <p>Une composition originale et élégante pour gâter tous les papas.</p>
+          <div class="produit-footer">
+            <span class="produit-prix">45 €</span>
+            <span class="voir-btn">Voir →</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <footer>© 2026 Maïté Floral - Tous droits réservés</footer>
+  </div>
+
+  <!-- PAGE DÉTAIL PRODUIT -->
+  <div class="page" id="page-detail">
+
+    <div class="detail-container">
+      <div class="detail-top">
+        <div class="detail-visuel" id="detail-emoji"></div>
+        <div class="detail-infos">
+          <span class="badge" id="detail-badge"></span>
+          <h1 id="detail-titre"></h1>
+          <div class="detail-prix-big" id="detail-prix"></div>
+          <p class="detail-desc" id="detail-desc"></p>
+          <ul class="detail-liste" id="detail-liste"></ul>
+          <div class="detail-actions">
+            <button class="panier-btn" id="detail-panier-btn">🛒 Ajouter au panier</button>
+            <button class="back-btn" onclick="afficher('page-boutique')">← Retour</button>
+          </div>
+        </div>
+      </div>
+      <hr class="detail-sep">
+      <div class="detail-section-titre">Bon à savoir</div>
+      <div class="detail-note" id="detail-note"></div>
+    </div>
+    <footer>© 2026 Maïté Floral - Tous droits réservés</footer>
+  </div>
+
+  <!-- BOUTON PANIER FLOTTANT -->
+  <button class="panier-flottant" onclick="afficher('page-panier')" id="btn-panier-flottant">
+    🛒 Panier <span class="panier-count" id="panier-count">0</span>
+  </button>
+
+  <!-- PAGE PANIER -->
+  <div class="page" id="page-panier">
+    <div class="panier-header">
+      <h1>🛒 Mon Panier</h1>
+      <p>Vos créations florales sélectionnées</p>
+    </div>
+    <div class="panier-contenu">
+      <div id="panier-liste"></div>
+      <div id="panier-total-bloc" style="display:none;">
+        <div class="panier-total">
+          <div>
+            <div class="total-label">Total de votre commande</div>
+            <div class="total-montant" id="panier-total-montant"></div>
+          </div>
+          <button class="commander-btn" onclick="ouvrirModaleCommande()">✉️ Commander</button>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center; padding-bottom: 40px;">
+      <button class="back-btn" onclick="afficher('page-boutique')">← Continuer mes achats</button>
+    </div>
+    <footer>© 2026 Maïté Floral - Tous droits réservés</footer>
+  </div>
+
+  <!-- MODALE COMMANDE -->
+  <div class="modale-overlay" id="modale-commande">
+    <div class="modale-box">
+
+      <!-- Formulaire email -->
+      <div id="modale-form">
+        <div class="modale-emoji">📧</div>
+        <h3>Passer commande</h3>
+        <p>Entrez votre adresse email pour confirmer votre commande. Nous vous recontacterons rapidement !</p>
+        <div class="modale-error" id="modale-error"></div>
+        <input class="modale-input" type="email" id="commande-email" placeholder="Votre adresse email" />
+        <div class="modale-actions">
+          <button class="modale-annuler" onclick="fermerModale()">Annuler</button>
+          <button class="modale-confirm" onclick="confirmerCommande()">Confirmer ✓</button>
+        </div>
+      </div>
+
+      <!-- Message succès -->
+      <div class="modale-succes" id="modale-succes">
+        <div class="modale-emoji">🌸</div>
+        <h3 style="color:#c08497; margin-bottom:8px;">Commande envoyée !</h3>
+        <p style="color:#888; margin-bottom:20px;">Merci ! Votre commande a bien été enregistrée. Nous vous contacterons à l'adresse <strong id="succes-email"></strong> très prochainement.</p>
+        <button class="modale-confirm" onclick="fermerModale()">Fermer</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- NOTIF PANIER -->
+  <div class="notif" id="notif"></div>
+
+  <script>
+    let panier = [];
+
+    const produits = {
+      mariage: {
+        emoji: "💍",
+        badge: "Mariage",
+        titre: "Bouquet de Mariée",
+        prix: "60 €",
+        desc: "Un bouquet de mariée est bien plus qu'un simple arrangement floral : c'est le symbole de votre amour et de votre personnalité. Chez Maïté Floral, chaque bouquet de mariée est créé sur mesure, avec soin et passion, pour s'accorder parfaitement à votre robe, votre thème et vos envies.",
+        points: [
+          "Création 100% sur mesure selon vos souhaits",
+          "Fleurs fraîches de saison sélectionnées avec soin",
+          "Disponible en livraison ou retrait en boutique",
+          "Consultation personnalisée offerte"
+        ],
+        note: "Pour les commandes mariage, nous vous recommandons de nous contacter au moins 3 semaines à l'avance afin de garantir la disponibilité des fleurs et de préparer votre composition dans les meilleures conditions."
+      },
+      anniversaire: {
+        emoji: "🎂",
+        badge: "Anniversaire",
+        titre: "Composition d'Anniversaire",
+        prix: "40 €",
+        desc: "Célébrez chaque anniversaire avec une touche de nature et de couleur ! Notre composition d'anniversaire est un arrangement joyeux et festif, pensé pour surprendre et émouvoir. Un cadeau original et élégant qui fait toujours son effet.",
+        points: [
+          "Bouquet coloré et festif adapté à l'occasion",
+          "Fleurs fraîches et feuillages soigneusement choisis",
+          "Livraison possible le jour J (sur commande)",
+          "Carte message personnalisée incluse"
+        ],
+        note: "Nous vous conseillons de passer commande 48h à l'avance pour les dates importantes afin d'assurer la fraîcheur et la disponibilité des fleurs."
+      },
+      muguet: {
+        emoji: "🌱",
+        badge: "Muguet",
+        titre: "Composition de Muguet",
+        prix: "30 €",
+        desc: "Le muguet, symbole de bonheur et de chance, est une tradition française incontournable. Notre composition de muguet est préparée avec délicatesse pour offrir un brin d'espoir et de douceur à ceux que vous aimez. Un geste simple et plein de sens.",
+        points: [
+          "Muguet frais et parfumé de qualité supérieure",
+          "Présenté dans un joli emballage cadeau",
+          "Disponible autour du 1er mai",
+          "Idéal pour offrir en famille ou entre amis"
+        ],
+        note: "La composition de muguet est une offre saisonnière, disponible principalement autour du 1er mai. Pensez à réserver votre composition à l'avance car les stocks sont limités chaque année."
+      },
+      meres: {
+        emoji: "👩",
+        badge: "Fête des Mères",
+        titre: "Composition Fête des Mères",
+        prix: "45 €",
+        desc: "Pour la fête des mères, offrez à votre maman un arrangement floral tendre et raffiné, qui exprime tout l'amour que vous lui portez. Chez Maïté Floral, nous créons des compositions pleines de douceur, avec les fleurs qu'elle aime, pour un moment inoubliable.",
+        points: [
+          "Composition élaborée autour des fleurs préférées de maman",
+          "Présentation soignée dans un joli emballage",
+          "Carte message personnalisée incluse",
+          "Livraison disponible le dimanche de la fête des mères"
+        ],
+        note: "La fête des mères est l'une de nos périodes les plus chargées. Pour être sûr(e) de recevoir votre commande à temps, nous vous recommandons de la passer au moins une semaine avant la date."
+      },
+      peres: {
+        emoji: "👨",
+        badge: "Fête des Pères",
+        titre: "Composition Fête des Pères",
+        prix: "45 €",
+        desc: "La fête des pères mérite un cadeau aussi unique que lui ! Notre composition florale pour la fête des pères sort des sentiers battus : originale, élégante et chaleureuse, elle exprime votre affection avec style. Parce que les papas aussi méritent de belles fleurs.",
+        points: [
+          "Composition originale aux tons chaleureux et élégants",
+          "Fleurs et feuillages soigneusement assortis",
+          "Emballage élégant et carte personnalisée incluse",
+          "Livraison disponible le dimanche de la fête des pères"
+        ],
+        note: "Pensez à commander au moins une semaine avant la fête des pères pour garantir la disponibilité et une livraison dans les temps. Une surprise qui fera vraiment plaisir !"
+      }
+    };
+
+    function afficher(id) {
+      document.querySelectorAll('.intro, .page').forEach(el => el.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
+      window.scrollTo(0, 0);
+      if (id === 'page-panier') renderPanier();
+      const pagesAvecPanier = ['page-boutique', 'page-detail', 'page-panier'];
+      document.getElementById('btn-panier-flottant').style.display =
+        pagesAvecPanier.includes(id) ? 'flex' : 'none';
+    }
+
+    function ouvrirDetail(id) {
+      const p = produits[id];
+      document.getElementById('detail-emoji').textContent = p.emoji;
+      document.getElementById('detail-badge').textContent = p.badge;
+      document.getElementById('detail-titre').textContent = p.titre;
+      document.getElementById('detail-prix').textContent = p.prix;
+      document.getElementById('detail-desc').textContent = p.desc;
+      document.getElementById('detail-note').textContent = p.note;
+
+      const liste = document.getElementById('detail-liste');
+      liste.innerHTML = '';
+      p.points.forEach(pt => {
+        const li = document.createElement('li');
+        li.textContent = pt;
+        liste.appendChild(li);
+      });
+
+      document.getElementById('detail-panier-btn').onclick = () => ajouterPanier(id);
+      afficher('page-detail');
+    }
+
+    function ajouterPanier(id) {
+      const p = produits[id];
+      const existant = panier.find(el => el.id === id);
+      if (existant) {
+        existant.qte++;
+      } else {
+        panier.push({ id, qte: 1 });
+      }
+      majCompteur();
+      const notif = document.getElementById("notif");
+      notif.textContent = '🌸 "' + p.titre + '" ajouté au panier !';
+      notif.style.display = "block";
+      setTimeout(() => { notif.style.display = "none"; }, 2500);
+    }
+
+    function ouvrirModaleCommande() {
+      document.getElementById('modale-form').style.display = 'block';
+      document.getElementById('modale-succes').style.display = 'none';
+      document.getElementById('commande-email').value = '';
+      document.getElementById('modale-error').style.display = 'none';
+      document.getElementById('modale-commande').classList.add('active');
+    }
+
+    function fermerModale() {
+      document.getElementById('modale-commande').classList.remove('active');
+    }
+
+    function confirmerCommande() {
+      const email = document.getElementById('commande-email').value.trim();
+      const err = document.getElementById('modale-error');
+      err.style.display = 'none';
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        err.textContent = 'Merci d\'entrer une adresse email valide.';
+        err.style.display = 'block';
+        return;
+      }
+
+      // Construire le résumé de la commande
+      let lignes = '';
+      let total = 0;
+      panier.forEach(el => {
+        const p = produits[el.id];
+        const prixNum = getPrixNum(el.id);
+        total += prixNum * el.qte;
+        lignes += `* ${p.titre} x${el.qte} = ${(prixNum * el.qte).toFixed(2)} EUR --- `;
+      });
+      const message = `Nouvelle commande reçue ! --- Email du client : ${email} --- Articles commandes : ${lignes} TOTAL : ${total.toFixed(2)} EUR`;
+
+      // Désactiver le bouton pendant l'envoi
+      const btnConfirm = document.querySelector('.modale-confirm');
+      btnConfirm.textContent = 'Envoi en cours...';
+      btnConfirm.disabled = true;
+
+      emailjs.init('zVmFof42AMZef85Pt');
+      emailjs.send('service_rxq1ir9', 'template_o3b02od', {
+        message: message
+      }).then(() => {
+        document.getElementById('succes-email').textContent = email;
+        document.getElementById('modale-form').style.display = 'none';
+        document.getElementById('modale-succes').style.display = 'block';
+        panier = [];
+        majCompteur();
+        btnConfirm.textContent = 'Confirmer ✓';
+        btnConfirm.disabled = false;
+      }).catch(() => {
+        err.textContent = 'Erreur lors de l\'envoi. Vérifiez votre connexion et réessayez.';
+        err.style.display = 'block';
+        btnConfirm.textContent = 'Confirmer ✓';
+        btnConfirm.disabled = false;
+      });
+    }
+
+    function majCompteur() {
+      const total = panier.reduce((s, el) => s + el.qte, 0);
+      document.getElementById('panier-count').textContent = total;
+    }
+
+    function changerQte(id, delta) {
+      const item = panier.find(el => el.id === id);
+      if (!item) return;
+      item.qte += delta;
+      if (item.qte <= 0) panier = panier.filter(el => el.id !== id);
+      majCompteur();
+      renderPanier();
+    }
+
+    function supprimerItem(id) {
+      panier = panier.filter(el => el.id !== id);
+      majCompteur();
+      renderPanier();
+    }
+
+    function getPrixNum(id) {
+      const prixStr = produits[id].prix;
+      return parseFloat(prixStr.replace('€', '').trim());
+    }
+
+    function renderPanier() {
+      const liste = document.getElementById('panier-liste');
+      const totalBloc = document.getElementById('panier-total-bloc');
+      liste.innerHTML = '';
+
+      if (panier.length === 0) {
+        liste.innerHTML = '<div class="panier-vide"><span class="big-emoji">🛒</span>Votre panier est vide.<br><br>Parcourez notre boutique pour ajouter des compositions !</div>';
+        totalBloc.style.display = 'none';
+        return;
+      }
+
+      let total = 0;
+      panier.forEach(el => {
+        const p = produits[el.id];
+        const prixNum = getPrixNum(el.id);
+        total += prixNum * el.qte;
+        const div = document.createElement('div');
+        div.className = 'panier-item';
+        div.innerHTML = `
+          <div class="panier-item-emoji">${p.emoji}</div>
+          <div class="panier-item-info">
+            <h3>${p.titre}</h3>
+            <span>${p.prix}</span>
+          </div>
+          <div class="panier-qte">
+            <button class="qte-btn" onclick="changerQte('${el.id}', -1)">−</button>
+            <span class="qte-val">${el.qte}</span>
+            <button class="qte-btn" onclick="changerQte('${el.id}', 1)">+</button>
+          </div>
+          <button class="suppr-btn" onclick="supprimerItem('${el.id}')" title="Supprimer">✕</button>
+        `;
+        liste.appendChild(div);
+      });
+
+      document.getElementById('panier-total-montant').textContent = total.toFixed(2).replace('.', ',') + ' €';
+      totalBloc.style.display = 'block';
+    }
+
+    document.getElementById('page-intro').style.display = 'flex';
+    document.getElementById('btn-panier-flottant').style.display = 'none';
+  </script>
+
+</body>
+</html>
