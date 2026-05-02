@@ -344,6 +344,32 @@
     }
     .commander-btn:hover { background: #a86d82; transform: scale(1.03); }
 
+    .note-btn {
+      padding: 6px 12px;
+      background: #fdf6f9;
+      border: 1.5px solid #f3dde5;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: 0.2s;
+      color: #333;
+    }
+    .note-btn.active { background: #c08497; color: white; border-color: #c08497; }
+    .note-btn:hover { background: #fce4ec; }
+
+    .comment-card {
+      background: white;
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 10px rgba(192,132,151,0.08);
+      border: 1px solid #f3dde5;
+    }
+    .comment-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+    .comment-note { color: #f4a136; font-size: 1rem; }
+    .comment-date { color: #ccc; font-size: 0.8rem; }
+    .comment-text { color: #555; font-size: 0.95rem; line-height: 1.6; }
+
     /* ── NOTIF PANIER ── */
     .notif {
       display: none;
@@ -458,6 +484,7 @@
       <p>Un univers doux et floral inspiré par les fleurs et la nature.</p>
       <button class="btn" onclick="afficher('page-boutique')">Découvrir</button>
     </div>
+
     <div style="text-align:center; padding: 50px 20px 10px;">
       <h2 style="font-size:2rem; color:#c08497;">Dernières créations</h2>
       <div style="width:60px; height:3px; background:#c08497; margin:12px auto 0; border-radius:10px;"></div>
@@ -466,6 +493,28 @@
       <img src="https://i.imgur.com/k01dihr.jpeg" alt="Création florale" style="width:100%; height:320px; object-fit:cover; border-radius:16px; box-shadow:0 4px 18px rgba(192,132,151,0.2);" />
       <img src="https://i.imgur.com/QSuGpkc.jpeg" alt="Création florale" style="width:100%; height:320px; object-fit:cover; border-radius:16px; box-shadow:0 4px 18px rgba(192,132,151,0.2);" />
       <img src="https://i.imgur.com/UQAnnsV.jpeg" alt="Création florale" style="width:100%; height:320px; object-fit:cover; border-radius:16px; box-shadow:0 4px 18px rgba(192,132,151,0.2);" />
+    </div>
+
+    <!-- SECTION COMMENTAIRES -->
+    <div style="max-width:700px; margin:0 auto 60px; padding:0 20px;">
+      <div style="text-align:center; margin-bottom:30px;">
+        <h2 style="font-size:2rem; color:#c08497;">Vos avis 💬</h2>
+        <div style="width:60px; height:3px; background:#c08497; margin:10px auto 16px; border-radius:10px;"></div>
+        <p style="color:#aaa; font-size:0.9rem;">🔒 Tous les avis sont anonymes — votre identité n'est jamais partagée</p>
+      </div>
+      <div style="background:white; border-radius:16px; padding:24px; box-shadow:0 4px 18px rgba(192,132,151,0.12); border:1px solid #f3dde5; margin-bottom:30px;">
+        <div style="display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap;">
+          <button onclick="setNote(1)" class="note-btn" id="note1">⭐</button>
+          <button onclick="setNote(2)" class="note-btn" id="note2">⭐⭐</button>
+          <button onclick="setNote(3)" class="note-btn" id="note3">⭐⭐⭐</button>
+          <button onclick="setNote(4)" class="note-btn" id="note4">⭐⭐⭐⭐</button>
+          <button onclick="setNote(5)" class="note-btn" id="note5">⭐⭐⭐⭐⭐</button>
+        </div>
+        <textarea id="comment-input" placeholder="Laissez votre avis ici... (anonyme)" rows="3" style="width:100%; padding:12px; border:1.5px solid #f3dde5; border-radius:12px; font-size:0.95rem; outline:none; resize:none; font-family:Arial,sans-serif;"></textarea>
+        <button onclick="publierCommentaire()" style="margin-top:10px; padding:11px 26px; background:#c08497; color:white; border:none; border-radius:30px; font-size:0.95rem; cursor:pointer; transition:0.3s;">Publier anonymement 🔒</button>
+        <p id="comment-error" style="color:#d44; font-size:0.85rem; margin-top:8px; display:none;"></p>
+      </div>
+      <div id="commentaires-liste" style="display:none;"></div>
     </div>
     <footer>© 2026 Maïté Floral - Tous droits réservés</footer>
   </div>
@@ -634,6 +683,66 @@
   <div class="notif" id="notif"></div>
 
   <script>
+    let noteSelectionnee = 0;
+    let commentaires = JSON.parse(localStorage.getItem('maite_commentaires') || '[]');
+
+    function setNote(n) {
+      noteSelectionnee = n;
+      for (let i = 1; i <= 5; i++) {
+        document.getElementById('note' + i).classList.toggle('active', i === n);
+      }
+    }
+
+    function publierCommentaire() {
+      const texte = document.getElementById('comment-input').value.trim();
+      const err = document.getElementById('comment-error');
+      err.style.display = 'none';
+      if (!texte) { err.textContent = 'Merci d\'écrire un commentaire.'; err.style.display = 'block'; return; }
+      if (noteSelectionnee === 0) { err.textContent = 'Merci de donner une note.'; err.style.display = 'block'; return; }
+
+      const btn = document.querySelector('[onclick="publierCommentaire()"]');
+      btn.textContent = 'Envoi en cours...';
+      btn.disabled = true;
+
+      const etoiles = '⭐'.repeat(noteSelectionnee);
+      emailjs.init('zVmFof42AMZef85Pt');
+      emailjs.send('service_rxq1ir9', 'template_o3b02od', {
+        message: `Nouvel avis anonyme reçu !\n\nNote : ${etoiles} (${noteSelectionnee}/5)\n\nCommentaire : ${texte}`
+      }).then(() => {
+        document.getElementById('comment-input').value = '';
+        noteSelectionnee = 0;
+        for (let i = 1; i <= 5; i++) document.getElementById('note' + i).classList.remove('active');
+        btn.textContent = '✅ Avis envoyé !';
+        setTimeout(() => {
+          btn.textContent = 'Publier anonymement 🔒';
+          btn.disabled = false;
+        }, 2500);
+      }).catch(() => {
+        err.textContent = 'Erreur lors de l\'envoi. Réessayez.';
+        err.style.display = 'block';
+        btn.textContent = 'Publier anonymement 🔒';
+        btn.disabled = false;
+      });
+    }
+
+    function afficherCommentaires() {
+      const liste = document.getElementById('commentaires-liste');
+      if (!liste) return;
+      if (commentaires.length === 0) {
+        liste.innerHTML = '<p style="text-align:center;color:#ccc;padding:20px;">Soyez le premier à laisser un avis ! 🌸</p>';
+        return;
+      }
+      liste.innerHTML = commentaires.map(c => `
+        <div class="comment-card">
+          <div class="comment-header">
+            <span class="comment-note">${'⭐'.repeat(c.note)}</span>
+            <span class="comment-date">${c.date}</span>
+          </div>
+          <p class="comment-text">${c.texte}</p>
+        </div>
+      `).join('');
+    }
+
     let panier = [];
 
     const categories = {
@@ -855,12 +964,7 @@
         total += prixNum * el.qte;
         lignes += `* ${p.titre} x${el.qte} = ${(prixNum * el.qte).toFixed(2)} EUR --- `;
       });
-      const message = `Nouvelle commande reçue ! 
-      Email du client : ${email} 
-      
-      Articles commandes : ${lignes} 
-      
-      TOTAL : ${total.toFixed(2)} EUR`;
+      const message = `Nouvelle commande reçue ! --- Email du client : ${email} --- Articles commandes : ${lignes} TOTAL : ${total.toFixed(2)} EUR`;
 
       // Désactiver le bouton pendant l'envoi
       const btnConfirm = document.querySelector('.modale-confirm');
@@ -951,6 +1055,7 @@
 
     document.getElementById('page-intro').style.display = 'flex';
     document.getElementById('btn-panier-flottant').style.display = 'none';
+    afficherCommentaires();
   </script>
 
 </body>
